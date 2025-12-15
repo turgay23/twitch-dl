@@ -24,6 +24,11 @@ twitch-dl videos [OPTIONS] CHANNEL_NAME
 </tr>
 
 <tr>
+    <td class="code">-g, --game TEXT</td>
+    <td>Show videos of given game (can be given multiple times)</td>
+</tr>
+
+<tr>
     <td class="code">-l, --limit INTEGER</td>
     <td>Number of videos to fetch. Defaults to 40 in compact mode, 10 otherwise.</td>
 </tr>
@@ -34,8 +39,8 @@ twitch-dl videos [OPTIONS] CHANNEL_NAME
 </tr>
 
 <tr>
-    <td class="code">-g, --game TEXT</td>
-    <td>Show videos of given game (can be given multiple times)</td>
+    <td class="code">--skip-live</td>
+    <td>Skip videos which are currently being broadcast.</td>
 </tr>
 
 <tr>

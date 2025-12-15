@@ -94,6 +94,11 @@ twitch-dl download [OPTIONS] [IDS]...
     <td class="code">--cache-dir TEXT</td>
     <td>Folder where VODs are downloaded before joining. Uses placeholders similar to --output. [default: <code>/home/ihabunek/.cache/twitch-dl/videos/{id}/{quality}</code>]</td>
 </tr>
+
+<tr>
+    <td class="code">--skip-live</td>
+    <td>Skip videos which are currently being broadcast.</td>
+</tr>
 </tbody>
 </table>
 
