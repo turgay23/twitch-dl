@@ -9,6 +9,7 @@ twitch-dl changelog
   providing an access token and regardless of your geo location
 * Add `videos --skip-live` and `download --skip-live` option to skip videos
   currently being broadcast (#176)
+* Fix `twitch-dl --version` when running from pyz archive
 
 ### [3.2.0 (2025-09-25)](https://github.com/ihabunek/twitch-dl/releases/tag/3.2.0)
 
