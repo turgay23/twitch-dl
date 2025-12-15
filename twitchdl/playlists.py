@@ -2,6 +2,10 @@
 Parse and manipulate m3u8 playlists.
 """
 
+import base64
+import json
+import logging
+import re
 from dataclasses import dataclass
 from os.path import splitext
 from pathlib import Path
@@ -12,7 +16,10 @@ import click
 import m3u8
 
 from twitchdl import utils
-from twitchdl.output import bold, dim, print_table
+from twitchdl.exceptions import ConsoleError
+from twitchdl.output import bold, dim, print_log, print_table
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -36,23 +43,73 @@ class Vod:
     """File name to which to download the VOD"""
 
 
-def parse_playlists(playlists_m3u8: str) -> List[Playlist]:
-    def _parse(source: str) -> Generator[Playlist, None, None]:
-        document = load_m3u8(source)
+def parse_playlists(playlists_str: str) -> List[Playlist]:
+    document = load_m3u8(playlists_str)
+    playlists = [_parse_playlist(playlist) for playlist in document.playlists]
+    if not playlists:
+        raise ConsoleError("No playlists found")
 
-        for p in document.playlists:
-            resolution = (
-                "x".join(str(r) for r in p.stream_info.resolution)
-                if p.stream_info.resolution
-                else None
-            )
+    hidden_playlists = _parse_hidden_playlists(playlists_str, playlists)
+    return sorted(playlists + hidden_playlists, key=_playlist_key)
 
-            media = p.media[0]
-            is_source = media.group_id == "chunked"
-            yield Playlist(media.name, media.group_id, resolution, p.uri, is_source)
 
-    playlists = list(_parse(playlists_m3u8))
-    return sorted(playlists, key=_playlist_key)
+def _parse_playlist(playlist: m3u8.Playlist):
+    resolution = (
+        "x".join(str(r) for r in playlist.stream_info.resolution)
+        if playlist.stream_info.resolution
+        else None
+    )
+
+    media = playlist.media[0]
+    is_source = media.group_id == "chunked"
+
+    return Playlist(
+        media.name,
+        media.group_id,
+        resolution,
+        playlist.uri,
+        is_source,
+    )
+
+
+def _parse_hidden_playlists(
+    playlists_str: str,
+    regular_playlists: list[Playlist],
+) -> list[Playlist]:
+    """
+    When fetching playlists, if `include_unavailable=true` is added to the
+    query, then the playlists file will contain information about playlists
+    which are hidden to the user due to geo location, being logged in, etc.
+    This function recovers these playlists.
+    """
+    regular_playlist = regular_playlists[0]
+    playlist_url_pattern = regular_playlist.url.replace(regular_playlist.group_id, "{group_id}")
+
+    hidden_playlists: List[Playlist] = []
+    pattern = r'EXT-X-SESSION-DATA:DATA-ID="com.amazon.ivs.unavailable-media",VALUE="(.+)"'
+    match = re.search(pattern, playlists_str)
+    if match:
+        try:
+            logger.debug("Found something")
+            b64_data = match.group(1)
+            json_data = base64.b64decode(b64_data)
+            data = json.loads(json_data)
+
+            for playlist in data:
+                group_id = playlist["GROUP-ID"]
+                playlist = Playlist(
+                    name=playlist["NAME"],
+                    group_id=group_id,
+                    resolution=playlist["RESOLUTION"],
+                    url=playlist_url_pattern.format(group_id=group_id),
+                    is_source=group_id == "chunked",
+                )
+                hidden_playlists.append(playlist)
+                print_log(f"Found hidden quality: {playlist.name}")
+        except Exception as ex:
+            logger.debug(f"Failed parsing hidden playlist data: {ex}")
+
+    return hidden_playlists
 
 
 def load_m3u8(playlist_m3u8: str) -> m3u8.M3U8:

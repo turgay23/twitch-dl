@@ -450,6 +450,7 @@ def get_playlists(video_id: str, access_token: AccessToken) -> str:
         "nauthsig": access_token["signature"],
         "allow_audio_only": "true",
         "allow_source": "true",
+        "include_unavailable": "true",
         "player": "twitchweb",
         "platform": "web",
         "supported_codecs": "av1,h265,h264",
