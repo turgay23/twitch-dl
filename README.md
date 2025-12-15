@@ -74,6 +74,13 @@ Licensed under the GPLv3: http://www.gnu.org/licenses/gpl-3.0.html
 Useful links for dev
 --------------------
 
+* https://eb.rodney.io/ - lists enhanced broadcasting streams
+
+Some other downloaders:
+
+* https://github.com/lay295/TwitchDownloader/
+* https://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/extractor/twitch.py
+
 Twitch GQL:
 
  * https://supersonichub1.github.io/twitch-graphql-api/index.html
