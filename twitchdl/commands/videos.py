@@ -17,6 +17,7 @@ def videos(
     json: bool,
     limit: Optional[int],
     pager: Optional[int],
+    skip_live: bool,
     sort: twitch.VideosSort,
     type: twitch.VideosType,
 ):
@@ -29,7 +30,12 @@ def videos(
     max_videos = sys.maxsize if all or pager else limit
 
     total_count, generator = twitch.channel_videos_generator(
-        channel_name, max_videos, sort, type, game_ids=game_ids
+        channel_name,
+        max_videos,
+        sort,
+        type,
+        game_ids=game_ids,
+        skip_live=skip_live,
     )
 
     if json:

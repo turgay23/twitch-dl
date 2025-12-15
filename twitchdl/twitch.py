@@ -371,11 +371,14 @@ def channel_videos_generator(
     sort: VideosSort,
     type: VideosType,
     game_ids: Optional[List[str]] = None,
+    skip_live: bool = False,
 ) -> Tuple[int, Generator[Video, None, None]]:
     game_ids = game_ids or []
 
     def _generator(videos: Data, max_videos: int) -> Generator[Video, None, None]:
         for video in videos["edges"]:
+            if skip_live and video["node"]["status"] == "RECORDING":
+                continue
             if max_videos < 1:
                 return
             yield video["node"]

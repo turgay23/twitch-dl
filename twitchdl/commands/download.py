@@ -228,6 +228,11 @@ def _print_found_clip(clip: Clip):
 def _download_video(video: Video, args: DownloadOptions) -> None:
     target = Path(video_filename(video, args.format, args.output))
     print_found_video(video)
+
+    if args.skip_live and video["status"] == "RECORDING":
+        click.echo(f"Video {video['id']} is currently live, skipping download")
+        return
+
     print_log(f"Target: {blue(target)}")
 
     overwrite = args.overwrite

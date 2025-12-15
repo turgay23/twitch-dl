@@ -4,6 +4,7 @@ from typing import Any, Generic, List, Literal, Mapping, Optional, TypeVar, Type
 
 T = TypeVar("T")
 
+
 @dataclass
 class Page(Generic[T]):
     page_no: int
@@ -33,6 +34,7 @@ class DownloadOptions:
     start: Optional[int]
     max_workers: int
     cache_dir: str
+    skip_live: bool
 
 
 ClipsPeriod = Literal["last_day", "last_week", "last_month", "all_time"]

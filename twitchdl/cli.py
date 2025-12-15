@@ -337,6 +337,11 @@ def clips(
     help="Folder where VODs are downloaded before joining. Uses placeholders similar to --output.",
     default=f"{get_cache_dir()}/videos/{{id}}/{{quality}}",
 )
+@click.option(
+    "--skip-live",
+    is_flag=True,
+    help="Skip videos which are currently being broadcast.",
+)
 def download(
     ids: Tuple[str, ...],
     auth_token: Optional[str],
@@ -355,6 +360,7 @@ def download(
     start: Optional[int],
     max_workers: int,
     cache_dir: str,
+    skip_live: bool,
 ):
     """Download videos or clips.
 
@@ -385,6 +391,7 @@ def download(
         start=start,
         max_workers=max_workers,
         cache_dir=cache_dir,
+        skip_live=skip_live,
     )
 
     download(list(ids), options)
@@ -448,6 +455,13 @@ def info(id: str, json: bool, auth_token: Optional[str], sub_only: bool):
     is_flag=True,
 )
 @click.option(
+    "-g",
+    "--game",
+    "games_tuple",
+    help="Show videos of given game (can be given multiple times)",
+    multiple=True,
+)
+@click.option(
     "-l",
     "--limit",
     help="Number of videos to fetch. Defaults to 40 in compact mode, 10 otherwise.",
@@ -464,11 +478,9 @@ def info(id: str, json: bool, auth_token: Optional[str], sub_only: bool):
     flag_value=10,
 )
 @click.option(
-    "-g",
-    "--game",
-    "games_tuple",
-    help="Show videos of given game (can be given multiple times)",
-    multiple=True,
+    "--skip-live",
+    is_flag=True,
+    help="Skip videos which are currently being broadcast.",
 )
 @click.option(
     "-s",
@@ -493,6 +505,7 @@ def videos(
     json: bool,
     limit: Optional[int],
     pager: Optional[int],
+    skip_live: bool,
     sort: VideosSort,
     type: VideosType,
 ):
@@ -512,6 +525,7 @@ def videos(
         pager=pager,
         sort=sort,
         type=type,
+        skip_live=skip_live,
     )
 
 
