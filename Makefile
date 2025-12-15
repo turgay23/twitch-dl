@@ -13,7 +13,6 @@ bundle:
 	mkdir bundle
 	cp twitchdl/__main__.py bundle
 	pip install . --target=bundle
-	rm -rf bundle/*.dist-info
 	find bundle/ -type d -name "__pycache__" -exec rm -rf {} +
 	python -m zipapp \
 		--python "/usr/bin/env python3" \
