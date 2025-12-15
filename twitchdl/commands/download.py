@@ -345,7 +345,7 @@ def _download_video(video: Video, args: DownloadOptions) -> None:
 
     join_playlist = make_join_playlist(vods_m3u8, vods, targets)
     join_playlist_path = cache.get_path("playlist_downloaded.m3u8")
-    join_playlist.dump(join_playlist_path)  # type: ignore
+    join_playlist.dump(join_playlist_path)
     click.echo()
 
     if args.no_join:

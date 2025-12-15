@@ -110,7 +110,7 @@ def make_join_playlist(
     playlist: m3u8.M3U8,
     vods: List[Vod],
     targets: List[Path],
-) -> m3u8.Playlist:
+) -> m3u8.M3U8:
     """
     Make a modified playlist which references downloaded VODs
     Keep only the downloaded segments and skip the rest
