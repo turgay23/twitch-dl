@@ -9,6 +9,7 @@ from typing import Any, Dict, Generator, List, Mapping, Optional, Tuple, Union
 
 import click
 import httpx
+from httpx._types import QueryParamTypes
 
 from twitchdl import CLIENT_ID
 from twitchdl.entities import (
@@ -67,9 +68,17 @@ def request(
     json: Any = None,
     content: Optional[Content] = None,
     headers: Optional[Mapping[str, str]] = None,
+    params: Optional[QueryParamTypes] = None,
 ):
     with httpx.Client() as client:
-        request = client.build_request(method, url, json=json, content=content, headers=headers)
+        request = client.build_request(
+            method,
+            url,
+            json=json,
+            content=content,
+            headers=headers,
+            params=params,
+        )
         log_request(request)
         start = time.time()
         response = client.send(request)
@@ -448,7 +457,7 @@ def get_playlists(video_id: str, access_token: AccessToken) -> str:
     }
 
     try:
-        response = httpx.get(url, params=params)
+        response = request("GET", url, params=params)
         response.raise_for_status()
         return response.content.decode("utf-8")
     except httpx.HTTPStatusError as ex:
