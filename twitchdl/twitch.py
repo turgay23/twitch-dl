@@ -495,7 +495,7 @@ def get_video_chapters(video_id: str) -> List[Chapter]:
         "extensions": {
             "persistedQuery": {
                 "version": 1,
-                "sha256Hash": "8d2793384aac3773beab5e59bd5d6f585aedb923d292800119e03d40cd0f9b41",
+                "sha256Hash": "71835d5ef425e154bf282453a926d99b328cdc5e32f36d3a209d0f4778b41203",
             }
         },
     }
